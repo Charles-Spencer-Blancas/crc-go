@@ -17,10 +17,8 @@ func twoToPow(x uint64) uint64 {
 	return uint64(math.Pow(2, float64(x)))
 }
 
-func crc(gen uint64, data uint64) uint64 {
+func doDivision(gen uint64, div uint64) uint64 {
 	numBitsGen := numBits(gen)
-	div := data << (numBitsGen - 1)
-
 	numBitsDiv := numBits(div)
 
 	var work uint64 = 0
@@ -44,12 +42,25 @@ func crc(gen uint64, data uint64) uint64 {
 		work += toAdd
 	}
 
-	return (data << (numBitsGen - 1)) + work
+	return work
+}
+
+func crc(gen uint64, data uint64) uint64 {
+	numBitsGen := numBits(gen)
+	div := data << (numBitsGen - 1)
+	return (data << (numBitsGen - 1)) + doDivision(gen, div)
+}
+
+func checkCrc(gen uint64, msg uint64) bool {
+	return doDivision(gen, msg) == 0
 }
 
 func main() {
 	var gen uint64 = 0b1011
 	var data uint64 = 0b11011110
 
-	fmt.Printf("%b\n", crc(gen, data))
+	crced := crc(gen, data)
+	erred := crced + 1
+	fmt.Println(checkCrc(gen, crced))
+	fmt.Println(checkCrc(gen, erred))
 }
