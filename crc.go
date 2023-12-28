@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math"
 )
 
@@ -53,14 +52,4 @@ func crc(gen uint64, data uint64) uint64 {
 
 func checkCrc(gen uint64, msg uint64) bool {
 	return doDivision(gen, msg) == 0
-}
-
-func main() {
-	var gen uint64 = 0b1011
-	var data uint64 = 0b11011110
-
-	crced := crc(gen, data)
-	erred := crced + 1
-	fmt.Println(checkCrc(gen, crced))
-	fmt.Println(checkCrc(gen, erred))
 }
