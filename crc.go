@@ -19,7 +19,7 @@ func twoToPow(x uint64) uint64 {
 
 func doDivision(gen uint64, div uint64) (uint64, error) {
 	if gen <= 1 {
-		return 0, errors.New("Generator must be > 1")
+		return 0, errors.New("generator must be > 1")
 	}
 	numBitsGen := numBits(gen)
 	numBitsDiv := numBits(div)
@@ -69,4 +69,17 @@ func checkCrc(gen uint64, msg uint64) (bool, error) {
 		return false, err
 	}
 	return answer == 0, nil
+}
+
+func decodeCrc(gen uint64, msg uint64) (uint64, error) {
+	valid, err := checkCrc(gen, msg)
+	if err != nil {
+		return msg, err
+	}
+
+	if valid {
+		return msg >> (numBits(gen) - 1), nil
+	} else {
+		return msg, errors.New("there is an error in the message")
+	}
 }
