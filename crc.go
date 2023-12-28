@@ -41,6 +41,11 @@ func doDivision(gen uint64, div uint64) uint64 {
 		work += toAdd
 	}
 
+	// If in the last iteration we can still divide by gen, do iteration
+	for numBits(work) >= numBitsGen {
+		work = work ^ gen
+	}
+
 	return work
 }
 
