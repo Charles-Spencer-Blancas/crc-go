@@ -18,6 +18,10 @@ With the `-c` flag, the app checks if a message is divisible by the generator. I
 it checks if any detectable errors are present. `./crc-go -c 32 4576` checks if the message 4576
 is divisible by the generator 32.
 
+The `-d` flag takes a generator and a message and decodes the message (only if 
+no errors are detected, of course). `./crc-go -d 7 112` decodes the message 112 encoded
+with the generator 7.
+
 The `-b` flag allows the user to input their numbers in binary instead of decimal, and 
-the output of the app will also be in binary. It can be used with or without the `-c` flag.
+the output of the app will also be in binary. It can be used in any of the above modes.
 `./crc-go -b 111 11100` is equivalent to `./crc-go 7 28`
