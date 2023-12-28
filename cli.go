@@ -26,21 +26,31 @@ func main() {
 	}
 	gen, err := strconv.ParseUint(args[0], base, 64)
 	if err != nil {
-		fmt.Println("ERROR: Generator must be a number\n", usage)
+		fmt.Println("ERROR: Generator must be a number >= 2\n", usage)
 	}
 
 	data, err := strconv.ParseUint(args[1], base, 64)
 	if err != nil {
-		fmt.Println("ERROR: Data must be a number\n", usage)
+		fmt.Println("ERROR: Data must be a number >= 0\n", usage)
 	}
 
 	if *checkFlag {
-		fmt.Println(checkCrc(gen, data))
+		out, err := checkCrc(gen, data)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		fmt.Println(out)
 	} else {
 		out := "%d\n"
 		if *binaryMode {
 			out = "%b\n"
 		}
-		fmt.Printf(out, crc(gen, data))
+		res, err := crc(gen, data)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		fmt.Printf(out, res)
 	}
 }

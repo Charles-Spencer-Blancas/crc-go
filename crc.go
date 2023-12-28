@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"math"
 )
 
@@ -16,7 +17,10 @@ func twoToPow(x uint64) uint64 {
 	return uint64(math.Pow(2, float64(x)))
 }
 
-func doDivision(gen uint64, div uint64) uint64 {
+func doDivision(gen uint64, div uint64) (uint64, error) {
+	if gen <= 1 {
+		return 0, errors.New("Generator must be > 1")
+	}
 	numBitsGen := numBits(gen)
 	numBitsDiv := numBits(div)
 
@@ -46,15 +50,23 @@ func doDivision(gen uint64, div uint64) uint64 {
 		work = work ^ gen
 	}
 
-	return work
+	return work, nil
 }
 
-func crc(gen uint64, data uint64) uint64 {
+func crc(gen uint64, data uint64) (uint64, error) {
 	numBitsGen := numBits(gen)
 	div := data << (numBitsGen - 1)
-	return (data << (numBitsGen - 1)) + doDivision(gen, div)
+	rem, err := doDivision(gen, div)
+	if err != nil {
+		return data, err
+	}
+	return (data << (numBitsGen - 1)) + rem, nil
 }
 
-func checkCrc(gen uint64, msg uint64) bool {
-	return doDivision(gen, msg) == 0
+func checkCrc(gen uint64, msg uint64) (bool, error) {
+	answer, err := doDivision(gen, msg)
+	if err != nil {
+		return false, err
+	}
+	return answer == 0, nil
 }
